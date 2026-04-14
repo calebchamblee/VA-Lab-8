@@ -20,7 +20,7 @@ def init():
     # convert to np array with list comprehension
     all_data = np.array([[point['x'], point['y']] for point in data])
     
-    # Requirement 2: Check for manual centroids sent from textboxes
+    # Check for manual centroids sent from textboxes
     manual_centroids = request.json.get('centroids')
     
     if manual_centroids:
@@ -36,7 +36,7 @@ def init():
     # initialize labels to closest centroid to each point
     labels = []
     for i in range(len(data)):
-        # partner's original distance formula
+        # original distance formula
         distances = [((all_data[i][0] - centroid[0])**2 + (all_data[i][1] - centroid[1])**2)**0.5 for centroid in centroids]
         # closest centroid to point (argmin gets index)
         labels.append(int(np.argmin(distances)))
@@ -53,22 +53,12 @@ def step_forward():
     # get data from frontend
     data = request.json['data']
     all_data = np.array([[point['x'], point['y']] for point in data])
-    
-    # Priority goes to manual textboxes, then history fallback
-    current_centroids = request.json.get('centroids')
-    if current_centroids is None:
-        if len(history) > 0:
-            current_centroids = history[-1][0]
-        else:
-            return jsonify({'error': 'Initialize first'}), 400
-
-    # compute the next step
-    converged = step(all_data, current_centroids)
+    converged = step(all_data, history[-1][0])
 
     # return centroids and labels to frontend to plot via history
     return jsonify({
         'centroids': history[-1][0], 
-        'labels': history[-1][1].tolist() if hasattr(history[-1][1], 'tolist') else history[-1][1], 
+        'labels': history[-1][1], 
         'converged': converged,
         'step': len(history) - 1
     })
