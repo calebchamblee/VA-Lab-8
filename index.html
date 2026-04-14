@@ -1,36 +1,43 @@
 <!doctype html>
 <html>
   <header>
-    <title>Kmeans</title>
+    <title>K-Means Visual Analytics</title>
     <link rel="stylesheet" type="text/css" href="static/style.css" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
   </header>
   <body>
-    <div id="control">
+    <div id="control" style="display: flex; align-items: center; gap: 15px; padding: 10px; border-bottom: 1px solid #ccc;">
       <div>
         <span>dataset</span>
-        <select id="dataset" onchange="reset()">
+        <select id="dataset" onchange="initializePlot()">
           {% for dataset in datasets %}
-          <option>{{dataset}}</option>
+          <option value="{{dataset}}">{{dataset}}</option>
           {% endfor %}
         </select>
       </div>
+
       <div>
         <span>n_clusters</span>
-        <input type="number" id="n_clusters" value="2" min="2" max="10" onchange="reset()" />
+        <input type="number" id="n_clusters" value="2" min="2" max="10" onchange="initializePlot()" />
       </div>
+
       <div>
         <span id="step-label">step:</span>
         <span id="step">0</span>
       </div>
-      <div>
-        <button id="back" onclick="backward()">⏪</button>
-        <button id="run" onclick="run()">run</button>
-        <button id="forward" onclick="forward()">⏩</button>
-        <button id="reset" onclick="reset()">reset</button>
+
+      <div class="button-group">
+        <button id="back" onclick="stepBack()">⏪</button>
+        <button id="run" onclick="runKmeans()">run</button>
+        <button id="forward" onclick="stepForward()">⏩</button>
+        <button id="reset" onclick="initializePlot()">reset</button>
       </div>
     </div>
+
+    <div id="inputs-container" style="padding: 10px; font-family: sans-serif; font-size: 14px;"></div>
+
     <div><svg id="scatterplot"></svg></div>
+    
     <script src="static/index.js"></script>
   </body>
 </html>
